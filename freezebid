@@ -1,0 +1,174 @@
+# My playground for auction stuff
+
+import random
+"""
+
+
+Each participant has their own order to players to nom
+so instead of for each p in uni,
+do if p not in alredy bidded list
+bid on that player, removce from all people list
+if already bidded,n ext in that person's list
+    
+"""
+
+#universe = {"Mike Trout", "Christian Yelich", "Alex Gordon"}
+universe = {"Mike Trout"}
+owners = {"hare", "paul", "tortoise"}
+
+paulValue = {"Mike Trout":12, "Christian Yelich":6, "Alex Gordon":25}
+tortoiseValue = {"Mike Trout":12, "Christian Yelich":5, "Alex Gordon":20}
+hareValue = {"Mike Trout":12, "Christian Yelich":4, "Alex Gordon":23}
+
+b = 3.105263158
+f = 4.333333333
+
+
+#paulCount = tortoiseCount = hareCount = 0
+lowPriceCount = retailPriceCount = freezeCount = 0
+
+posList = ["paul", "tortoise", "hare"]
+
+posPaul = 0
+posTortoise = 1
+posHare = 2
+
+startPos = 0
+nomTurnPos = startPos
+    
+    
+    
+def bidWar(player, nomOwn):
+    payValStart = 8 #change later to be more dynamic and owner specific
+    paulPrime = 0
+    tortoisePrime = 0
+    harePrime = 0
+    noBid = False
+    highBid = payValStart
+    freezeBid = 0
+    iTimes = {}
+    
+    currWinner = nomOwn
+    
+    if paulValue[p] >= payValStart:
+         paulPrime = 1
+    
+    if tortoiseValue[p] >= payValStart:
+         tortoisePrime = 1
+    
+    if hareValue[p] >= payValStart:
+         harePrime = 1
+         
+    #print "The current bid is: %d" % highBid
+    #print "The highest bidder is: %s" % currWinner
+         
+    #while more than one person is involved in the bidding
+    while (paulPrime + tortoisePrime + harePrime) >= 1:
+    
+        if highBid == 8:
+            freezeBid = 1
+        else:
+            freezeBid = 0
+        
+        #print "freezebid = %d" % freezeBid
+    
+        #print '*' * 10
+       
+        if paulPrime == 1 and currWinner != 'paul':
+            if freezeBid == 1:
+                paulTime = random.uniform(1, f)
+            else:
+                paulTime = random.uniform(1, b)
+        else:
+            paulTime = 100
+        if tortoisePrime == 1 and currWinner != 'tortoise':
+            if freezeBid == 1:
+                tortoiseTime = random.uniform(1, f)
+            else:
+                tortoiseTime = random.uniform(1, b)
+        else: 
+            tortoiseTime = 100
+        if harePrime == 1 and currWinner != 'hare':
+            if freezeBid == 1:
+                hareTime = random.uniform(1, f)
+            else:
+                hareTime = random.uniform(1, b)
+        else:
+            hareTime = 100
+            
+        bidTimes = {'paul':paulTime, 'tortoise':tortoiseTime, 'hare':hareTime}
+        
+        #print "Bid times: %s" % bidTimes
+        
+        for w, t in bidTimes.items():
+            iTimes[w] = t
+            
+        minTime = min(iTimes['paul'],iTimes['hare'],iTimes['tortoise'])
+        
+        if minTime > 3:
+            noBid = True
+            minTime = 105
+            #print "%s for %d going once, %d dollars going twice... sold! to %s" % (p, highBid, highBid, currWinner)
+           
+        
+        for w, t in bidTimes.items():
+            if minTime == t:
+                highBid = highBid + 1
+                #print "The current bid is: %d" % highBid
+                currWinner = w
+                #print "The highest bidder is: %s" % currWinner
+                
+        
+           
+        if highBid >= paulValue[p] or noBid == True:
+            paulPrime = 0
+        if highBid >= tortoiseValue[p] or noBid == True:
+            tortoisePrime = 0
+        if highBid >= hareValue[p] or noBid == True:
+            harePrime = 0
+        
+    winningOwner = currWinner
+    winningPrice = highBid
+    
+    return (winningOwner, winningPrice)
+        
+                
+# Main Method
+if __name__ == '__main__':
+    "This code runs when you invoke the script from the command line"  
+    
+    count = range(1000)
+    multiAucResults = []
+    aucResults = []
+    
+    for i in count:             
+     
+        nomTurnPos = startPos
+    
+                
+        for p in universe:
+            nominatingOwner = posList[nomTurnPos]
+            
+            #print "%s will make the next nomination" % nominatingOwner
+        
+            bidResult = bidWar(p, nominatingOwner)
+         
+            aucResults.append(bidResult)     
+            
+            nomTurnPos = nomTurnPos + 1   
+        
+        
+    multiAucResults.append(aucResults)
+         
+    #print "The results of the auction are: %s" % multiAucResults
+
+    for j in multiAucResults:
+        for owner, price in j:
+            if price == 8:
+                freezeCount += 1
+            else:
+                retailPriceCount += 1
+           
+                
+    print "The freeze worked %d times" % freezeCount
+    print "The player went for retail price %d times" % retailPriceCount
