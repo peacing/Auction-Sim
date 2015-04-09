@@ -1,12 +1,29 @@
 import random
 
-#universe = {"Mike Trout", "Christian Yelich", "Alex Gordon"}
-universe = {"Mike Trout"}
+class Player:
+    def __init__(self, id, name, positon):
+        self.id = id
+        self.name = name
+        self.positon = positon
+
+    def getName():
+        return self.name
+
+    def setName(nm):
+        self.name = nm
+
+    def getPosition():
+        return self.positon
+
+    def setPosition(pos):
+        self.positon = pos
+
+universe = []
 owners = {"hare", "paul", "tortoise"}
 
-paulValue = {"Mike Trout":40, "Christian Yelich":6, "Alex Gordon":25}
-tortoiseValue = {"Mike Trout":40, "Christian Yelich":5, "Alex Gordon":20}
-hareValue = {"Mike Trout":40, "Christian Yelich":4, "Alex Gordon":23}
+paulValue = {1:40, 2:6, 3:25}
+tortoiseValue = {1:40, 2:5, 3:20}
+hareValue = {1:40, 2:4, 3:23}
 
 paulCount = tortoiseCount = hareCount = 0
 
@@ -19,7 +36,12 @@ posHare = 2
 startPos = 0
 nomTurnPos = startPos
     
-    
+
+# retreive & build players via webapi call?
+# now hard code.    
+def buildUniverse():
+    universe.append(Player(1, 'Mike Trout', 'OF'))
+    universe.append(Player(2, 'Christian Yelich', 'OF'))
     
 def bidWar(player, nomOwn):
     payValStart = 1 #change later to be more dynamic and owner specific
@@ -32,13 +54,13 @@ def bidWar(player, nomOwn):
     
     currWinner = nomOwn
     
-    if paulValue[p] >= payValStart:
+    if paulValue[player.id] >= payValStart:
          paulPrime = 1
     
-    if tortoiseValue[p] >= payValStart:
+    if tortoiseValue[player.id] >= payValStart:
          tortoisePrime = 1
     
-    if hareValue[p] >= payValStart:
+    if hareValue[player.id] >= payValStart:
          harePrime = 1
          
     #while more than one person is involved in the bidding
@@ -73,11 +95,11 @@ def bidWar(player, nomOwn):
         print highBid
         print currWinner
                     
-        if highBid >= paulValue[p]:
+        if highBid >= paulValue[player.id]:
             paulPrime = 0
-        if highBid >= tortoiseValue[p]:
+        if highBid >= tortoiseValue[player.id]:
             tortoisePrime = 0
-        if highBid >= hareValue[p]:
+        if highBid >= hareValue[player.id]:
             harePrime = 0
         
     winningOwner = currWinner
@@ -93,12 +115,13 @@ if __name__ == '__main__':
     count = range(5)
     multiAucResults = []
     aucResults = []
+
+    buildUniverse()
     
     for i in count:             
      
         nomTurnPos = startPos
     
-                
         for p in universe:
             nominatingOwner = posList[nomTurnPos]
             
